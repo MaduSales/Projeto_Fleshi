@@ -2,7 +2,7 @@ from email.policy import default
 
 from flask_login import UserMixin
 from appfleshi import database, login_manager
-from datetime import datetime
+from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
 @login_manager.user_loader
@@ -15,11 +15,11 @@ class User(database.Model, UserMixin):
     username = database.Column(database.String(20), unique=True, nullable=False)
     email = database.Column(database.String(100), unique=True, nullable=False)
     password = database.Column(database.String(60), nullable=False)
-    photos = database.relationship("Photo", backref="user", lazy=True)
+    photos = database.relationship('Photo', backref='user', lazy=True)
 
 class Photo(database.Model):
     id = database.Column(database.Integer, primary_key=True)
     file_name = database.Column(database.String(255), default="default.jpg")
-    upload_date = database.Column(database.DateTime, default=lambda: datetime.now(ZoneInfo("America/Sao_Paulo")), nullable=False)
+    upload_date = database.Column(database.DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
     user_id = database.Column(database.Integer, database.ForeignKey("user.id"), nullable=False)
 
