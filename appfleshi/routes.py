@@ -3,7 +3,7 @@ from flask_login import login_required, login_user, logout_user, current_user
 from appfleshi import app
 from appfleshi.forms import LoginForm, RegisterForm, PhotoForm
 from appfleshi import app, database, bcrypt
-from appfleshi.models import User, Photo
+from appfleshi.models import User, Photo, Like
 import os
 from werkzeug.utils import secure_filename
 
@@ -58,3 +58,21 @@ def logout():
 def feed():
     photos = Photo.query.order_by(Photo.upload_date.desc()).all()
     return render_template("feed.html", photos=photos)
+
+
+@app.route("/like/<int:photo_id>", methods=['POST'])
+def like_photo(photo_id):
+    photo = Photo.query.get(photo_id)
+
+    existing_likes = Like.query.filter_by(photo_id=photo_id, user_id=current_user.id).first()
+
+    if existing_likes:
+        database.session.delete(existing_likes)
+    else:
+        like = Like(photo_id=photo_id, user_id=current_user.id)
+        database.session.add(like)
+
+    database.session.commit()
+
+    return redirect(url_for('feed', user_id=current_user.id))
+

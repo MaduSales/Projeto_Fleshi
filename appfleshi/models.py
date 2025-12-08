@@ -16,10 +16,17 @@ class User(database.Model, UserMixin):
     email = database.Column(database.String(100), unique=True, nullable=False)
     password = database.Column(database.String(60), nullable=False)
     photos = database.relationship('Photo', backref='user', lazy=True)
+    likes = database.relationship('Like', backref='user', lazy=True)
 
 class Photo(database.Model):
     id = database.Column(database.Integer, primary_key=True)
     file_name = database.Column(database.String(255), default="default.jpg")
     upload_date = database.Column(database.DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
     user_id = database.Column(database.Integer, database.ForeignKey("user.id"), nullable=False)
+    likes = database.relationship('Like', backref='photo', lazy=True)
+
+class Like(database.Model):
+    id = database.Column(database.Integer, primary_key=True)
+    user_id = database.Column(database.Integer, database.ForeignKey("user.id"), nullable=False)
+    photo_id = database.Column(database.Integer, database.ForeignKey("photo.id"), nullable=False)
 

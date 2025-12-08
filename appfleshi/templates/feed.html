@@ -13,4 +13,11 @@
             <img src="{{ url_for('static', filename='posts_photos/'~photo.file_name) }}" alt="Imagem">
         </a>
     {% endfor %}
+
+<!--    <form action="{{ url_for('like', 'photo_id=photo.id)}}" method="post">-->
+<!--        <button type="submit">-->
+
+<!--        </button>-->
+<!--    </form>-->
+
 {% endblock %}
