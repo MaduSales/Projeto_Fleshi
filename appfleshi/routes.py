@@ -57,6 +57,14 @@ def logout():
 @login_required
 def feed():
     photos = Photo.query.order_by(Photo.upload_date.desc()).all()
+
+    for photo in photos:
+        photo.user_liked = any(like.user_id == current_user.id for like in photo.likes)
+        # O código percorre a lista de fotos do feed e define o valor da variável "photo.user_liked" de acordo com o valor retornado pelo "any",
+        # já que a lista de likes do objeto fotos é percorrida e compara o id do user que curtiu com o id do user atual. Se os ids forem iguais,
+        # é armazenado o valor TRUE na variável user_liked, que será usado para mostrar a cor do botão no feed
+
+
     return render_template("feed.html", photos=photos)
 
 
