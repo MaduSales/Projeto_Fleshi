@@ -11,14 +11,18 @@
     <div class="container mt-5">
         <div class="row g-5">
             {% for photo in photos %}
-            <div class="col-12 col-sm-6 col-md-4 mb-5 px-4 d-flex justify-content-center">
-                <div class="border rounded-3 p-4 text-center">
+            <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-center">
+                <div class="photo-card border rounded-3 p-4">
+
                     <a href="{{ url_for('profile', user_id=photo.user_id) }}">
-                        <img src="{{ url_for('static', filename='posts_photos/'~photo.file_name) }}" alt="Imagem" class="img-fluid" style="height: 250px; object-fit: cover; border-radius: 8px;">
+                        <img
+                            src="{{ url_for('static', filename='posts_photos/'~photo.file_name) }}"
+                            alt="Imagem"
+                            class="feed-photo"
+                        >
                     </a>
 
-
-                    <form action="{{ url_for('like_photo', photo_id=photo.id)}}" method="post">
+                    <form action="{{ url_for('like_photo', photo_id=photo.id)}}" method="post" class="mt-2">
                         <button type="submit" class="like-btn btn border-0 bg-transparent p-2">
                             {% if photo.user_liked %}
                                 <img src="{{ url_for('static', filename='site_photos/full-star.png') }}" width="20px">
@@ -26,8 +30,10 @@
                                 <img src="{{ url_for('static', filename='site_photos/empty-star.png') }}" width="20px">
                             {% endif %}
                         </button>
-                        <span style="position: relative; top: 5px;">{{ photo.likes | length }}</span>  <!--Para mostras as curtidas, o len() não é aceito pelo jinja2-->
+
+                        <span class="likes-count">{{ photo.likes | length }}</span>
                     </form>
+
                 </div>
             </div>
             {% endfor %}

@@ -42,6 +42,12 @@
                     {{ form.confirm_password(class="form-control") }}
                 </div>
 
+                {% if form.password.errors %}
+                    {% for error in form.password.errors %}
+                        <p class="alert alert-danger">{{ error }}</p>
+                    {% endfor %}
+                {% endif %}
+
                 {{ form.submit(class="btn btn-outline-primary w-100 mb-3") }}
             </form>
             <a href="{{ url_for('homepage') }}">Tem uma conta? Faça login</a>
