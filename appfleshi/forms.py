@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, FileField
-from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Length
+from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Length, Regexp #Usando Regex para validar senha
+
+from appfleshi import bcrypt
 from appfleshi.models import User
 
 
@@ -16,14 +18,24 @@ class LoginForm(FlaskForm):
     def validate_email(self, email):
         user = User.query.filter_by(email=email.data).first()
         if not user:
-            raise ValidationError("Usuário não encontrado!")
+            raise ValidationError("E-mail inválido!")
         return None
+
+    def validate_password(self, password):
+        if self.email.errors:
+            return None
+
+        user = User.query.filter_by(email=self.email.data).first()
+        if not bcrypt.check_password_hash(user.password, password.data):
+            raise ValidationError("Senha inválida!")
+        return None
+
 
 class RegisterForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
-    username = StringField('Nome de Usuário', validators=[DataRequired(), Length(min=2, max=20)])
-    password = PasswordField('Senha', validators=[DataRequired(), Length(min=6, max=60)])
-    confirm_password = PasswordField('Confirmar Senha', validators=[DataRequired(), EqualTo('password', message='Senhas devem ser iguais!')])
+    username = StringField('Nome de Usuário', validators=[DataRequired(), Length(min=4, max=20)])
+    password = PasswordField('Senha', validators=[DataRequired(), Length(min=8, max=60), Regexp(regex=r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]$', message="A senha precisa ter pelo menos 1 caracter maiúsculo, 1 minúsculo, 1 número e 1 caracter especial.")])
+    confirm_password = PasswordField('Confirmar Senha', validators=[DataRequired(), EqualTo('password', message='As senhas não são iguais!')])
     submit = SubmitField('Criar Conta')
 
     def validate_email(self, email):
@@ -33,8 +45,11 @@ class RegisterForm(FlaskForm):
         return None
 
     def validate_username(self, username):
+        if self.email.errors:
+            return None
+
         user = User.query.filter_by(username=username.data).first()
         if user:
-            raise ValidationError("Usuário já cadastrado")
+            raise ValidationError("O usuário já existe")
         return None
 

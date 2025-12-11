@@ -20,6 +20,7 @@ def homepage():
 @app.route("/createaccount", methods=['GET', 'POST'])
 def createaccount():
     register_form = RegisterForm()
+
     if register_form.validate_on_submit():
         password = bcrypt.generate_password_hash(register_form.password.data)
         user = User(username=register_form.username.data, password=password, email=register_form.email.data)
