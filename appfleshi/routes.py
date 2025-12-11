@@ -85,3 +85,15 @@ def like_photo(photo_id):
 
     return redirect(url_for('feed', user_id=current_user.id))
 
+@app.route("/delete/<int:photo_id>", methods=['GET', 'POST'])
+def delete(photo_id):
+    photo = Photo.query.get(photo_id)
+
+    if not photo or photo.user_id != current_user.id:
+        return redirect(url_for('homepage'))
+    else:
+        database.session.delete(photo)
+
+    database.session.commit()
+
+    return redirect(url_for('profile', user_id=current_user.id))

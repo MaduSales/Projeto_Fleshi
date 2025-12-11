@@ -35,8 +35,13 @@
                 <img
                     src="{{ url_for('static', filename='posts_photos/' ~ photo.file_name) }}"
                     alt="Imagem"
-                    class="img-fluid rounded"
-                >
+                    class="img-fluid rounded">
+
+                 <form action="{{ url_for('delete', photo_id=photo.id)}}" method="post" class="mt-2">
+                        <button type="submit" class="delete-btn btn border-0 bg-transparent p-2">
+                            <img src="{{ url_for('static', filename='site_photos/delete.png') }}" alt="Lata de lixo">
+                        </button>
+                    </form>
             </div>
         </div>
         {% endfor %}
