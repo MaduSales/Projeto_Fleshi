@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, request
 from flask_login import login_required, login_user, logout_user, current_user
 from appfleshi import app
 from appfleshi.forms import LoginForm, RegisterForm, PhotoForm
@@ -33,20 +33,34 @@ def createaccount():
 @app.route('/profile/<user_id>', methods=['GET', 'POST'])
 @login_required
 def profile(user_id):
+    user_to_view = None #Variável flexível
+    photo_form = None
+
     if int(user_id) == current_user.id:
+        user_to_view = current_user #Atribui o objeto que é dono do perfil à variável
         photo_form = PhotoForm()
+
         if photo_form.validate_on_submit():
-            file = photo_form.photo.data #Pega o arquivo
-            secure_name = secure_filename(file.filename) #Gera um nome seguro
-            path = os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config["UPLOAD_FOLDER"], secure_name) #Cria uma variável para armazenar o caminho static/posts_photos/nome_arquivo.png
-            file.save(path) #Salva o caminho
-            photo = Photo(file_name = secure_name, user_id = current_user.id)
+            file = photo_form.photo.data
+            secure_name = secure_filename(file.filename)
+            path = os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config["UPLOAD_FOLDER"], secure_name)
+            file.save(path)
+            photo = Photo(file_name=secure_name, user_id=current_user.id)
             database.session.add(photo)
             database.session.commit()
-        return render_template('profile.html', user=current_user, form=photo_form)
+            return redirect(url_for('profile', user_id=current_user.id))
     else:
-        user = User.query.get(int(user_id))
-        return render_template('profile.html', user=user, form=None)
+        user_to_view = User.query.get(int(user_id)) #Atribui um perfil terceiro à variável
+
+        if not user_to_view:
+            return redirect(url_for('feed'))
+
+    for photo in user_to_view.photos:
+        photo.user_liked = any(like.user_id == current_user.id for like in photo.likes)
+
+    return render_template('profile.html', user=user_to_view, form=photo_form)
+
+
 
 @app.route("/logout")
 @login_required
@@ -83,7 +97,12 @@ def like_photo(photo_id):
 
     database.session.commit()
 
+    next_page = request.form.get('next_page')
+    if next_page:
+        return redirect(next_page)
+
     return redirect(url_for('feed', user_id=current_user.id))
+
 
 @app.route("/delete/<int:photo_id>", methods=['GET', 'POST'])
 def delete(photo_id):
