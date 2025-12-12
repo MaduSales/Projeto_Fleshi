@@ -1,7 +1,7 @@
 {% extends "homepage.html" %}
 
 {% block title %}
-    Fléshi - Perfil
+    Fléshi - Perfil de {{ user.username }}
 {% endblock %}
 
 {% block body %}
@@ -10,10 +10,11 @@
 
 <div class="container mt-5">
 
-    <h1 class="text-center mb-4">Perfil do usuário: {{ username }}</h1>
+    <h1 class="text-center mb-4">Perfil do usuário: {{ user.username }}</h1>
 
     {% if form %}
     <div class="card p-3 mb-4 shadow-sm">
+        <h2 class="text-center mb-3">Postar Foto</h2>
         <form method="post" enctype="multipart/form-data">
             {{ form.csrf_token }}
 
@@ -28,32 +29,36 @@
     </div>
     {% endif %}
 
-    <div class="row g-3">
-        {% for photo in user.photos %}
-        <div class="col-6 col-md-4 col-lg-3">
-            <div class="photo-card shadow-sm p-2 rounded">
-                <img
-                    src="{{ url_for('static', filename='posts_photos/' ~ photo.file_name) }}"
-                    alt="Imagem"
-                    class="img-fluid rounded">
+    <h2 class="text-center mt-5 mb-4">Minhas Publicações</h2>
 
-                 {% if user.id == current_user.id %}
-                  <form action="{{ url_for('delete', photo_id=photo.id)}}" method="post" class="mt-2">
-                        <button type="submit" class="delete-btn btn border-0 bg-transparent p-2">
-                            <img src="{{ url_for('static', filename='site_photos/delete.png') }}" alt="Lata de lixo" width="30px">
+    <div class="row g-5">
+        {% for photo in user.photos %}
+        <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-center">
+            <div class="border rounded-3 p-3" style="width: 430px;">
+                    <img src="{{ url_for('static', filename='posts_photos/' ~ photo.file_name) }}"
+                         alt="Imagem de {{ user.username }}"
+                         style="width: 100%; height: 220px; object-fit: cover; display: block; border-radius: 8px;x">
+
+                {% if user.id == current_user.id %}
+                    <!-- Se for o próprio perfil: Mostra delete -->
+                    <form action="{{ url_for('delete', photo_id=photo.id) }}" method="post" class="mt-2">
+                        <button type="submit" class="btn border-0 bg-transparent p-2">
+                            <img src="{{ url_for('static', filename='site_photos/delete.png') }}"
+                                 alt="Lata de lixo" width="30px">
                         </button>
                     </form>
                 {% else %}
-                <form action="{{ url_for('like_photo', photo_id=photo.id)}}" method="post" class="mt-2">
-                    <input type="hidden" name="next_page" value="{{ url_for('profile', user_id=user.id) }}">
-                        <button type="submit" class="like-btn btn border-0 bg-transparent p-2">
+                    <!-- Se for perfil de terceiros: Mostra like -->
+                    <form action="{{ url_for('like_photo', photo_id=photo.id) }}"
+                          method="post" class="mt-2 text-center">
+                        <input type="hidden" name="next_page" value="{{ url_for('profile', user_id=user.id) }}">
+                        <button type="submit" class="btn border-0 bg-transparent p-2">
                             {% if photo.user_liked %}
                                 <img src="{{ url_for('static', filename='site_photos/full-star.png') }}" width="20px">
                             {% else %}
                                 <img src="{{ url_for('static', filename='site_photos/empty-star.png') }}" width="20px">
                             {% endif %}
                         </button>
-
                         <span class="likes-count">{{ photo.likes | length }}</span>
                     </form>
                 {% endif %}
@@ -61,6 +66,10 @@
         </div>
         {% endfor %}
     </div>
+
+    {% if not user.photos %}
+        <p class="text-center mt-5 text-muted">Nenhuma foto publicada ainda.</p>
+    {% endif %}
 
 </div>
 
