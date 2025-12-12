@@ -11,6 +11,7 @@
 </head>
 {% block body %}
     <body>
+      <img src="{{ url_for('static', filename='site_photos/logo/128px.png') }}" alt="Logo" class="center-logo">
         <h1 class="text-center mt-5">Fléshi - Página Inicial</h1>
 
         {% block form %}
@@ -38,7 +39,7 @@
                     {% endfor %}
                 {% endif %}
 
-                {{ form.submit(class="btn btn-outline-success w-100 mb-3") }}
+                {{ form.submit(class="w-100 mb-3 custom-btn p-2 rounded-3") }}
             </form>
              <a href="{{ url_for('createaccount') }}" class="w-100">Não tem uma conta? Cadastre-se</a>
            </div>

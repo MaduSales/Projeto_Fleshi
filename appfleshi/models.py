@@ -24,6 +24,7 @@ class Photo(database.Model):
     upload_date = database.Column(database.DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
     user_id = database.Column(database.Integer, database.ForeignKey("user.id"), nullable=False)
     likes = database.relationship('Like', backref='photo', lazy=True, cascade="all, delete-orphan") #Permite a exclusão de fotos
+    caption = database.Column(database.String(255), nullable=False)
 
 class Like(database.Model):
     id = database.Column(database.Integer, primary_key=True)

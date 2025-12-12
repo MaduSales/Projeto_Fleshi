@@ -1,4 +1,4 @@
-{% extends "homepage.html"%}
+{% extends "homepage.html" %}
 
 {% block title %}
     Fléshi - Feed
@@ -12,7 +12,7 @@
         <div class="row g-5">
             {% for photo in photos %}
             <div class="col-12 col-sm-6 col-md-4 d-flex justify-content-center">
-                <div class="photo-card border rounded-3 p-4">
+                <div class="photo-card border rounded-3 p-4 shadow text-end">
 
                     <a href="{{ url_for('profile', user_id=photo.user_id) }}">
                         <img
@@ -32,7 +32,11 @@
                         </button>
 
                         <span class="likes-count">{{ photo.likes | length }}</span>
+                        <span> </span>
                     </form>
+                    {% if photo.caption %}
+                            <p class="text-start">{{photo.caption }}</p>
+                        {% endif %}
 
                 </div>
             </div>

@@ -14,3 +14,57 @@
   position: relative;
   top: 5px;
 }
+
+.custom-btn {
+    background-color: #9D00FF;
+    color: white;
+    border: none;
+}
+
+.custom-btn:hover {
+    background-color: #8A2BE2;
+}
+
+.custom-btn:active {
+    background-color: #520A86;
+}
+
+.font-color{
+    color: #9D00FF
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-evenly;
+    align-items: end;
+    background-color: #D5D5D5;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+
+.navbar-link {
+    color: #000;
+    text-decoration: none;
+    font-size: 1.1rem;
+    padding: 10px 15px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+
+.navbar-link:hover {
+    background-color: #C77DFF;
+    color: #000;
+    border-radius: 5px;
+}
+
+
+.navbar-link.active {
+    background-color: #4E0850;
+    font-weight: bold;
+}
+
+.center-logo {
+    display: block;
+    margin: 0 auto;
+    padding: 50px 0px 0px 0px;
+}

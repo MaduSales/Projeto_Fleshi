@@ -1,7 +1,8 @@
-<nav>
-  <a href="{{ url_for('feed') }}">Feed</a>
-  <a href="{{ url_for('profile', user_id=current_user.id) }}">Perfil</a>
-  <a href="{{ url_for('logout') }}">Sair</a>
+<nav class="navbar">
+    <img src="{{ url_for('static', filename='site_photos/logo/48px.png') }}" alt="Logo">
+  <a href="{{ url_for('feed') }}" class="navbar-link">Feed</a>
+  <a href="{{ url_for('profile', user_id=current_user.id) }}" class="navbar-link">Perfil</a>
+  <a href="{{ url_for('logout') }}" class="navbar-link">Sair</a>
 </nav>
 
 <!--Isso é um componente-->

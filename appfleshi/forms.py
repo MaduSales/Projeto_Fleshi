@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, FileField
+from wtforms import StringField, PasswordField, SubmitField, FileField, TextAreaField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError, Length, Regexp #Usando Regex para validar senha
 
 from appfleshi import bcrypt
@@ -9,6 +9,7 @@ from appfleshi.models import User
 class PhotoForm(FlaskForm):
     photo = FileField("Foto", validators=[DataRequired()])
     submit = SubmitField("Postar")
+    caption = StringField("Legenda", validators=[Length(max=42)])
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -34,7 +35,7 @@ class LoginForm(FlaskForm):
 class RegisterForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     username = StringField('Nome de Usuário', validators=[DataRequired(), Length(min=4, max=20)])
-    password = PasswordField('Senha', validators=[DataRequired(), Length(min=8, max=60), Regexp(regex=r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]$', message="A senha precisa ter pelo menos 1 caracter maiúsculo, 1 minúsculo, 1 número e 1 caracter especial.")])
+    password = PasswordField('Senha', validators=[DataRequired(), Length(min=8, max=60), Regexp(regex=r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,60}', message="A senha precisa ter pelo menos 1 caracter maiúsculo, 1 minúsculo, 1 número e 1 caracter especial.")])
     confirm_password = PasswordField('Confirmar Senha', validators=[DataRequired(), EqualTo('password', message='As senhas não são iguais!')])
     submit = SubmitField('Criar Conta')
 
